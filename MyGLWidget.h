@@ -18,4 +18,21 @@ class MyGLWidget:public ExamGLWidget
 
   private:
     int printOglError(const char file[], int line, const char func[]);
+    bool cubosVisibles = true;
+    struct DatosCubos{
+      float rotacion;
+      float size;
+    };
+
+    struct DatosPatricio{
+      int estado;
+      float size;
+    };
+
+    DatosCubos cubo1 = {.rotacion = 0 * (2.0f * M_PI / 3.0f), .size = 2.0f};
+    DatosCubos cubo2 = {.rotacion = 1 * (2.0f * M_PI / 3.0f), .size = 2.5f};
+    DatosCubos cubo3 = {.rotacion = 2 * (2.0f * M_PI / 3.0f), .size = 3.0f};
+
+    DatosPatricio patricio = {.estado = 0, .size = 2};
+
 };

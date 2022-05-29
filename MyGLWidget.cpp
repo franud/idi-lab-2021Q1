@@ -69,18 +69,17 @@ void MyGLWidget::paintGL ()   // Mètode que has de modificar
   glDrawArrays(GL_TRIANGLES, 0, patr.faces().size()*3);
 
   // Pintem el cub
-  glBindVertexArray(VAO_Cub);
-  float rotacionCubo1 = 0 * (2.0f * M_PI / 3.0f);
-  modelTransformCub (2.0, rotacionCubo1);
-  glDrawArrays(GL_TRIANGLES, 0, 36);
-  
-  float rotacionCubo2 = 1 * (2.0f * M_PI / 3.0f);
-  modelTransformCub (2.5, rotacionCubo2);
-  glDrawArrays(GL_TRIANGLES, 0, 36);
+  if (cubosVisibles) {
+    glBindVertexArray(VAO_Cub);
+    modelTransformCub (cubo1.size, cubo1.rotacion);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
 
-  float rotacionCubo3 = 2 * (2.0f * M_PI / 3.0f);
-  modelTransformCub (3.0, rotacionCubo3);
-  glDrawArrays(GL_TRIANGLES, 0, 36);
+    modelTransformCub (cubo2.size, cubo2.rotacion);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+
+    modelTransformCub (cubo3.size, cubo3.rotacion);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+  }
 
   glBindVertexArray(0);
 }
@@ -99,7 +98,16 @@ void MyGLWidget::modelTransformCub (float escala, float angle)
 
 void MyGLWidget::modelTransformPatricio ()    // Mètode que has de modificar
 {
-  ExamGLWidget::modelTransformPatricio ();
+  float rotacionPatricio = (float) (patricio.estado * (2.0f * M_PI / 3.0f));
+  TG = glm::mat4(1.f);
+  TG = glm::rotate(TG, rotacionPatricio, glm::vec3(0.0f, 1.0f, 0.0f));
+  TG = glm::translate(TG, glm::vec3(5.0f, 0.0f, 0.0f));
+  TG = glm::rotate (TG, (float)(-(2.0 * M_PI) / 4.0), glm::vec3(0.0f, 1.0f, 0.0f)); // Girar al patricio para que mire al centro
+  TG = glm::scale(TG, glm::vec3 (patricio.size));
+  TG = glm::scale(TG, glm::vec3 (escala));
+  TG = glm::translate(TG, -centreBasePat);
+  
+  glUniformMatrix4fv (transLoc, 1, GL_FALSE, &TG[0][0]);
 }
 
 void MyGLWidget::viewTransform ()    // Mètode que has de modificar
@@ -126,18 +134,22 @@ void MyGLWidget::keyPressEvent(QKeyEvent* event) {
   makeCurrent();
   switch (event->key()) {
   case Qt::Key_V: {
+    cubosVisibles = !cubosVisibles;
       // ...
     break;
 	}
   case Qt::Key_1: {
+      patricio.estado = 0;
       // ...
     break;
 	}
   case Qt::Key_2: {
+      patricio.estado = 1;
       // ...
     break;
 	}
   case Qt::Key_3: {
+      patricio.estado = 2;
       // ...
     break;
 	}
